@@ -1,6 +1,6 @@
 # Astro Calculator (C# / WPF)
 
-A Windows-focused scientific calculator with spaceflight utilities. It mixes a traditional keypad with mission-planning helpers such as the Tsiolkovsky rocket equation, orbital/escape velocity, Hohmann transfer, and surface gravity calculations. The UI now offers angle-mode toggles, inverse and hyperbolic trig, exp/10ˣ, cube root, and astro presets with transfer time summaries.
+A Windows-focused scientific calculator with spaceflight utilities. It mixes a traditional keypad with mission-planning helpers such as the Tsiolkovsky rocket equation, orbital/escape velocity, Hohmann transfer, and surface gravity calculations.
 
 ## Project layout
 - `SpaceCalculator.App/` – WPF application with the UI (XAML), view model, and calculation engines.

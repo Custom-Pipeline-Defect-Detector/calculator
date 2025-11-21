@@ -15,9 +15,7 @@ public static class CalculatorEngine
 
     private static readonly HashSet<string> Functions = new(StringComparer.OrdinalIgnoreCase)
     {
-        "sin", "cos", "tan", "asin", "acos", "atan",
-        "sinh", "cosh", "tanh",
-        "log", "ln", "sqrt", "cbrt", "abs", "fact", "neg", "exp", "pow10"
+        "sin", "cos", "tan", "log", "ln", "sqrt", "abs", "fact", "neg"
     };
 
     private static readonly Dictionary<string, double> Constants = new(StringComparer.OrdinalIgnoreCase)
@@ -25,16 +23,14 @@ public static class CalculatorEngine
         {"pi", Math.PI},
         {"tau", Math.PI * 2},
         {"e", Math.E},
-        {"g0", 9.80665},
-        {"c", 299792458}, // m/s
-        {"au", 1.495978707e11} // meters
+        {"g0", 9.80665}
     };
 
-    public static double Evaluate(string expression, bool useDegrees = false)
+    public static double Evaluate(string expression)
     {
         var tokens = Tokenize(expression);
         var rpn = ToRpn(tokens);
-        return EvaluateRpn(rpn, useDegrees);
+        return EvaluateRpn(rpn);
     }
 
     private static IEnumerable<string> Tokenize(string expression)
@@ -175,7 +171,7 @@ public static class CalculatorEngine
         return output;
     }
 
-    private static double EvaluateRpn(Queue<string> rpn, bool useDegrees)
+    private static double EvaluateRpn(Queue<string> rpn)
     {
         var stack = new Stack<double>();
 
@@ -212,7 +208,7 @@ public static class CalculatorEngine
             }
             else if (Functions.Contains(token))
             {
-                ApplyFunction(stack, token, useDegrees);
+                ApplyFunction(stack, token);
             }
             else
             {
@@ -228,7 +224,7 @@ public static class CalculatorEngine
         return stack.Pop();
     }
 
-    private static void ApplyFunction(Stack<double> stack, string function, bool useDegrees)
+    private static void ApplyFunction(Stack<double> stack, string function)
     {
         if (stack.Count == 0)
         {
@@ -238,31 +234,13 @@ public static class CalculatorEngine
         switch (function.ToLowerInvariant())
         {
             case "sin":
-                stack.Push(Math.Sin(ToRadiansIfNeeded(stack.Pop(), useDegrees)));
+                stack.Push(Math.Sin(stack.Pop()));
                 break;
             case "cos":
-                stack.Push(Math.Cos(ToRadiansIfNeeded(stack.Pop(), useDegrees)));
+                stack.Push(Math.Cos(stack.Pop()));
                 break;
             case "tan":
-                stack.Push(Math.Tan(ToRadiansIfNeeded(stack.Pop(), useDegrees)));
-                break;
-            case "asin":
-                stack.Push(ToDegreesIfNeeded(Math.Asin(stack.Pop()), useDegrees));
-                break;
-            case "acos":
-                stack.Push(ToDegreesIfNeeded(Math.Acos(stack.Pop()), useDegrees));
-                break;
-            case "atan":
-                stack.Push(ToDegreesIfNeeded(Math.Atan(stack.Pop()), useDegrees));
-                break;
-            case "sinh":
-                stack.Push(Math.Sinh(stack.Pop()));
-                break;
-            case "cosh":
-                stack.Push(Math.Cosh(stack.Pop()));
-                break;
-            case "tanh":
-                stack.Push(Math.Tanh(stack.Pop()));
+                stack.Push(Math.Tan(stack.Pop()));
                 break;
             case "log":
                 var value = stack.Pop();
@@ -279,10 +257,6 @@ public static class CalculatorEngine
                 if (sqrtValue < 0) throw new InvalidOperationException("Sqrt domain error.");
                 stack.Push(Math.Sqrt(sqrtValue));
                 break;
-            case "cbrt":
-                var cbrtValue = stack.Pop();
-                stack.Push(CubeRoot(cbrtValue));
-                break;
             case "abs":
                 stack.Push(Math.Abs(stack.Pop()));
                 break;
@@ -291,12 +265,6 @@ public static class CalculatorEngine
                 if (raw < 0 || raw > 170) throw new InvalidOperationException("Factorial domain error.");
                 if (Math.Abs(raw % 1) > double.Epsilon) throw new InvalidOperationException("Factorial requires integers.");
                 stack.Push(Factorial((int)raw));
-                break;
-            case "exp":
-                stack.Push(Math.Exp(stack.Pop()));
-                break;
-            case "pow10":
-                stack.Push(Math.Pow(10, stack.Pop()));
                 break;
             case "neg":
                 stack.Push(-stack.Pop());
@@ -314,19 +282,5 @@ public static class CalculatorEngine
             result *= i;
         }
         return result;
-    }
-
-    private static double ToRadiansIfNeeded(double value, bool useDegrees) => useDegrees ? value * Math.PI / 180.0 : value;
-
-    private static double ToDegreesIfNeeded(double value, bool useDegrees) => useDegrees ? value * 180.0 / Math.PI : value;
-
-    private static double CubeRoot(double value)
-    {
-        if (value == 0)
-        {
-            return 0;
-        }
-
-        return value > 0 ? Math.Pow(value, 1.0 / 3.0) : -Math.Pow(-value, 1.0 / 3.0);
     }
 }

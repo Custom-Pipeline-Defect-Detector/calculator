@@ -58,20 +58,6 @@ public static class SpaceCalculations
     }
 
     /// <summary>
-    /// Time of flight for a Hohmann transfer between two circular orbits (seconds).
-    /// </summary>
-    public static double HohmannTransferTime(double mu, double r1, double r2)
-    {
-        if (mu <= 0 || r1 <= 0 || r2 <= 0)
-        {
-            throw new ArgumentException("μ and radii must be positive.");
-        }
-
-        var semiMajorAxis = (r1 + r2) / 2.0;
-        return Math.PI * Math.Sqrt(Math.Pow(semiMajorAxis, 3) / mu);
-    }
-
-    /// <summary>
     /// Surface gravity in m/s^2 given mu (km^3/s^2) and radius in km.
     /// </summary>
     public static double SurfaceGravity(double mu, double radiusKm)

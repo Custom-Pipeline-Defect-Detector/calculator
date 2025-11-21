@@ -56,8 +56,4 @@ public partial class MainWindow : Window
     private void OnComputeSurfaceGravity(object sender, RoutedEventArgs e) => _viewModel.ComputeSurfaceGravity();
 
     private void OnUseAnswer(object sender, RoutedEventArgs e) => _viewModel.UseLastAnswer();
-
-    private void OnToggleAngleMode(object sender, RoutedEventArgs e) => _viewModel.ToggleAngleMode();
-
-    private void OnComputeHohmannTime(object sender, RoutedEventArgs e) => _viewModel.ComputeHohmannTransferTime();
 }
